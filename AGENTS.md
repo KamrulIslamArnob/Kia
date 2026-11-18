@@ -107,3 +107,12 @@ skills/                 → AI agent skill definitions
 
 - Docs: https://hyperframes.heygen.com/introduction
 - Catalog (50+ blocks): https://hyperframes.heygen.com/catalog/blocks/data-chart
+
+## Zero-Touch Studio Hub & Auto-Intake
+
+When the user asks to edit a video, shares a raw video file, or pastes a video/reference URL:
+
+1. Check `CURRENT_PROJECT.json` (or run `node studio-hub/cli-ingest.mjs --status`) to identify the active project.
+2. Read `projects/<active-slug>/AI_READY_PROMPT.md` and `projects/<active-slug>/PROJECT_BRIEF.json` for all uploaded media, FFprobe metadata, reference links, brand tokens, and creative instructions.
+3. If the user provides a URL or local file path in chat, ingest it directly into the active project with `node studio-hub/cli-ingest.mjs --url "<url>"` or `--file "<path>"` (`--category raw-video|references|images|audio`) instead of asking them to move files manually.
+4. Keep `studio-hub` workflow details in `.agents/WORKFLOW_AUTO_INTAKE.md` and open/refresh the Studio Hub UI at `http://localhost:4400`.

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<!-- signature-reel-style master-skeleton.html
+     Standalone zero-warning 1080x1920 @ 30fps HyperFrames scaffold.
+     Uses inline span/svg layout inside top-level clips so standalone index.html
+     passes both CLI lint and Studio host rules with 0 errors and 0 warnings.
+     For large multi-scene films (15s+), split each beat into compositions/*.html
+     using the <template> pattern in references/gsap-recipes.md. -->
+<html
+  lang="en"
+  data-composition-variables='[
+    {"id":"hookNum","type":"string","label":"Hook Numeral","default":"3"},
+    {"id":"hookKicker","type":"string","label":"Hook Kicker","default":"Before you send"},
+    {"id":"hookPunch","type":"string","label":"Hook Highlight","default":"SECRET DMs"},
+    {"id":"handleText","type":"string","label":"Creator Handle","default":"@creator.studio"},
+    {"id":"accentColor","type":"color","label":"Accent Color","default":"#e9ff00"}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Signature Reel Style — Master Skeleton</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --bg-ground: #09060c;
+        --bg-glow: rgba(116, 178, 18, 0.34);
+        --ink-primary: #ffffff;
+        --ink-dark: #09060c;
+        --accent: var(--accentColor, #e9ff00);
+        --accent-mid: #9bc800;
+        --accent-glow: rgba(233, 255, 0, 0.46);
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1080px; height: 1920px; background: var(--bg-ground);
+        overflow: hidden; font-family: "Inter", sans-serif; color: var(--ink-primary);
+      }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+      #studio-ground { position: absolute; inset: 0; background: var(--bg-ground); z-index: 0; }
+      #studio-spotlight {
+        position: absolute; top: -140px; left: -100px; width: 820px; height: 820px; border-radius: 50%;
+        background: radial-gradient(circle, var(--bg-glow) 0%, rgba(9, 6, 12, 0) 70%);
+        pointer-events: none; z-index: 0;
+      }
+      .slide { position: absolute; inset: 0; z-index: 2; }
+      .swrap { position: absolute; inset: 0; display: block; opacity: 0; }
+      .grad-num {
+        font-family: "Montserrat", sans-serif; font-weight: 900; font-size: 252px; line-height: 0.85;
+        letter-spacing: -0.04em; display: inline-block; color: transparent;
+        background: linear-gradient(180deg, var(--accent) 0%, var(--accent-mid) 58%, rgba(9, 6, 12, 0) 100%);
+        -webkit-background-clip: text; background-clip: text;
+      }
+      .glass-badge {
+        background: linear-gradient(180deg, rgba(26, 28, 36, 0.88) 0%, rgba(15, 16, 22, 0.94) 100%);
+        border: 2px solid rgba(255, 255, 255, 0.22); border-radius: 38px;
+        box-shadow: 0 24px 56px rgba(0, 0, 0, 0.62);
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+      }
+      .feature-pill {
+        background:
+          radial-gradient(110% 95% at 50% 100%, rgba(233, 255, 0, 0.2) 0%, rgba(0, 0, 0, 0) 72%),
+          linear-gradient(180deg, rgba(26, 28, 36, 0.9) 0%, rgba(14, 15, 21, 0.95) 100%);
+        border: 2px solid rgba(255, 255, 255, 0.24); border-radius: 34px;
+        box-shadow: 0 22px 52px rgba(0, 0, 0, 0.6);
+        display: flex; align-items: center; padding: 0 36px; gap: 24px;
+      }
+      .pill-icon-circle {
+        width: 72px; height: 72px; border-radius: 999px; background: var(--accent); color: var(--ink-dark);
+        font-family: "Montserrat", sans-serif; font-weight: 900; font-size: 34px;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      }
+      .pill-label {
+        font-family: "Inter", sans-serif; font-weight: 700; font-size: 46px; line-height: 1;
+        letter-spacing: -0.02em; color: #ffffff; display: inline-block;
+      }
+      .step-dot {
+        width: 62px; height: 62px; border-radius: 999px; background: rgba(255, 255, 255, 0.12);
+        border: 2px solid rgba(255, 255, 255, 0.24); color: #ffffff;
+        font-family: "Montserrat", sans-serif; font-weight: 800; font-size: 30px;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .step-dot.is-active { background: var(--accent); border-color: var(--accent); color: var(--ink-dark); }
+      .step-connector { width: 44px; height: 3px; background: rgba(255, 255, 255, 0.26); border-radius: 2px; display: block; }
+      .ladder-primary {
+        font-family: "Inter", sans-serif; font-weight: 800; font-size: 70px; line-height: 0.96;
+        letter-spacing: -0.03em; color: #ffffff; display: block;
+      }
+      .ladder-bridge {
+        font-family: "Inter", sans-serif; font-weight: 600; font-size: 48px; line-height: 1;
+        letter-spacing: -0.02em; color: rgba(255, 255, 255, 0.88); display: block;
+      }
+      .ladder-serif-climax {
+        font-family: "Playfair Display", serif; font-style: italic; font-weight: 700; font-size: 88px;
+        line-height: 0.96; color: var(--accent); text-shadow: 0 0 28px var(--accent-glow); display: block;
+      }
+      .ui-row {
+        background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px; padding: 26px 28px; font-family: "Inter", sans-serif; font-weight: 600;
+        font-size: 32px; color: #ffffff; display: flex; align-items: center; justify-content: space-between;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="12" data-width="1080" data-height="1920" data-fps="30">
+      <div id="studio-ground"></div>
+      <div id="studio-spotlight" data-layout-ignore></div>
+
+      <!-- BEAT 1 (0.0s - 3.0s, track 1): Hook Numeral + 3D Floating Glass Badges + Save Bar -->
+      <div id="beat-hook" class="slide clip" data-start="0" data-duration="3.0" data-track-index="1" data-track-kind="graphics">
+        <span id="w-hook" class="swrap">
+          <span id="hook-header" style="position:absolute; top:300px; left:136px; right:136px; display:flex; align-items:center; gap:28px;">
+            <span id="hook-num" style="display:block;"><span class="grad-num" data-var-text="hookNum">3</span></span>
+            <span style="display:flex; flex-direction:column; gap:10px;">
+              <span id="hook-kicker" data-var-text="hookKicker" style="font-weight:700; font-size:42px; color:#ffffff; display:block;">Before you send</span>
+              <span id="hook-punch" data-var-text="hookPunch" style="font-family:'Montserrat',sans-serif; font-weight:900; font-size:66px; line-height:0.96; letter-spacing:-0.03em; color:var(--accent); text-shadow:0 0 28px var(--accent-glow); display:block;">SECRET DMs</span>
+            </span>
+          </span>
+
+          <span id="badge-left" class="glass-badge" style="position:absolute; top:700px; left:136px; width:220px; height:200px;">
+            <span style="width:58px; height:58px; display:block; background:no-repeat center/contain url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e9ff00' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 2L11 13'/%3E%3Cpath d='M22 2L15 22L11 13L2 9L22 2Z'/%3E%3C/svg%3E&quot;);"></span>
+            <span style="font-weight:800; font-size:32px; color:var(--accent);">Direct</span>
+          </span>
+
+          <span id="badge-right" class="glass-badge" style="position:absolute; top:720px; right:136px; width:288px; height:196px;">
+            <span style="font-weight:800; font-size:34px; color:#ffffff;">Messages</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:29px; color:rgba(255,255,255,0.78);">3 unread</span>
+          </span>
+
+          <span id="save-bar" style="position:absolute; top:1120px; left:148px; border-left:5px solid var(--accent); padding-left:22px; display:flex; flex-direction:column; gap:6px;">
+            <span style="font-weight:800; font-size:44px; color:#ffffff;">Save this reel</span>
+            <span style="font-weight:600; font-size:32px; color:var(--accent);">Never lose it</span>
+          </span>
+        </span>
+      </div>
+
+      <!-- BEAT 2 (3.0s - 6.0s, track 2): Step Tracker + Chest Optical Blur-Morph Ladder -->
+      <div id="beat-ladder" class="slide clip" data-start="3.0" data-duration="3.0" data-track-index="2" data-track-kind="graphics">
+        <span id="w-ladder" class="swrap">
+          <span id="step-tracker" style="position:absolute; top:224px; left:140px; right:140px; display:flex; justify-content:center; align-items:center; gap:18px;">
+            <span id="step-dot-1" class="step-dot is-active">1</span>
+            <span class="step-connector"></span>
+            <span class="step-dot">2</span>
+            <span class="step-connector"></span>
+            <span class="step-dot">3</span>
+          </span>
+
+          <span id="trick-pill" style="position:absolute; top:380px; right:140px; width:136px; height:228px; border-radius:999px; background:var(--accent); color:var(--ink-dark); display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:28px 14px;">
+            <span style="font-weight:800; font-size:30px;">Trick</span>
+            <span style="width:52px; height:52px; display:block; background:no-repeat center/contain url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2309060c' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E&quot;);"></span>
+          </span>
+
+          <span id="chest-ladder" style="position:absolute; top:1020px; left:140px; right:140px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px;">
+            <span id="lad-1" class="ladder-primary">Read any message</span>
+            <span id="lad-2" class="ladder-bridge">without triggering</span>
+            <span id="lad-3" class="ladder-serif-climax">seen receipts</span>
+            <span id="lad-4" class="ladder-primary" style="position:relative;">
+              ever again.
+              <span id="lad-underline" style="position:absolute; left:8px; bottom:-16px; width:340px; height:24px; display:block; background:no-repeat center/contain url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 340 24'%3E%3Cpath d='M6 16 Q170 5 334 14' fill='none' stroke='%23ffffff' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E&quot;);" data-layout-ignore></span>
+            </span>
+          </span>
+        </span>
+      </div>
+
+      <!-- BEAT 3 (6.0s - 9.0s, track 1): Dotted Matrix + 3D Perspective Device + Neon Highlight Box -->
+      <div id="beat-device" class="slide clip" data-start="6.0" data-duration="3.0" data-track-index="1" data-track-kind="graphics">
+        <span id="w-device" class="swrap" style="background-color:var(--bg-ground); background-image:radial-gradient(rgba(255,255,255,0.10) 1.5px, transparent 1.5px); background-size:24px 24px;">
+          <span id="device-caption" style="position:absolute; top:252px; left:140px; right:140px; text-align:center; font-weight:700; font-size:50px; letter-spacing:-0.02em; color:#ffffff; display:block;">
+            Tap Privacy &amp; Safety
+          </span>
+
+          <span id="phone-rig" style="position:absolute; top:376px; left:190px; width:700px; height:1240px; border-radius:68px; background:#12141a; border:8px solid #3c424c; box-shadow:0 40px 90px rgba(0,0,0,0.78); padding:44px; overflow:hidden; display:block;" data-layout-allow-overflow>
+            <span style="width:180px; height:32px; border-radius:999px; background:#07080a; margin:0 auto 56px auto; display:block;"></span>
+            <span style="display:flex; flex-direction:column; gap:28px;">
+              <span class="ui-row"><span>Theme &amp; Appearance</span><span style="color:rgba(255,255,255,0.65);">&rsaquo;</span></span>
+              <span class="ui-row" style="position:relative;">
+                <span>Privacy &amp; Safety</span><span style="color:var(--accent); font-weight:800;">OFF</span>
+                <span id="ui-neon-box" style="position:absolute; inset:-8px -12px; border:4px solid var(--accent); border-radius:24px; box-shadow:0 0 28px var(--accent-glow); pointer-events:none; display:block;"></span>
+              </span>
+              <span class="ui-row"><span>Typing Indicator</span><span style="color:rgba(255,255,255,0.65);">OFF</span></span>
+            </span>
+          </span>
+        </span>
+      </div>
+
+      <!-- BEAT 4 (9.0s - 12.0s, track 2): Split-Slot Frosted Glass Pills + Creator Handle CTA -->
+      <div id="beat-outro" class="slide clip" data-start="9.0" data-duration="3.0" data-track-index="2" data-track-kind="graphics">
+        <span id="w-outro" class="swrap">
+          <span id="outro-head" style="position:absolute; top:360px; left:140px; right:140px; text-align:center; font-family:'Montserrat',sans-serif; font-weight:900; font-size:74px; line-height:1; letter-spacing:-0.03em; color:var(--accent); display:block;">
+            ZERO TRACE MODE
+          </span>
+
+          <span id="pill-1" class="feature-pill" style="position:absolute; top:860px; left:190px; width:700px; height:136px;">
+            <span class="pill-icon-circle">1</span>
+            <span style="overflow:hidden; height:64px; display:flex; align-items:center; gap:14px;" data-layout-allow-overflow>
+              <span id="p1-a" class="pill-label">Read</span>
+              <span id="p1-b" class="pill-label">Receipts Off</span>
+            </span>
+          </span>
+
+          <span id="pill-2" class="feature-pill" style="position:absolute; top:1032px; left:190px; width:700px; height:136px;">
+            <span class="pill-icon-circle">2</span>
+            <span style="overflow:hidden; height:64px; display:flex; align-items:center; gap:14px;" data-layout-allow-overflow>
+              <span id="p2-a" class="pill-label">Vanish</span>
+              <span id="p2-b" class="pill-label">Secret Chat</span>
+            </span>
+          </span>
+
+          <span id="handle-cta" class="glass-badge" style="position:absolute; top:1340px; left:290px; width:500px; height:112px; border-radius:999px; flex-direction:row; gap:18px;">
+            <span style="width:44px; height:44px; border-radius:999px; background:var(--accent); display:block;"></span>
+            <span data-var-text="handleText" style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:32px; color:#ffffff;">@creator.studio</span>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <script>
+      gsap.defaults({ overwrite: "auto" });
+      const tl = gsap.timeline({ paused: true });
+      tl.to({}, { duration: 12 }, 0);
+
+      // BEAT 1 (0.0s - 3.0s)
+      tl.set("#w-hook", { autoAlpha: 1 }, 0);
+      tl.fromTo("#hook-num", { opacity: 0, y: 54, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.2, ease: "power4.out", immediateRender: false }, 0.033333);
+      tl.fromTo("#hook-kicker", { opacity: 0, y: 18, filter: "blur(12px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.2, ease: "power3.out", immediateRender: false }, 0.066666);
+      tl.fromTo("#badge-left", { opacity: 0, y: 92, scale: 0.86, rotation: -4 }, { opacity: 1, y: 0, scale: 1, rotation: -10, duration: 0.333333, ease: "power4.out", immediateRender: false }, 0.1);
+      tl.fromTo("#badge-right", { opacity: 0, y: 92, scale: 0.86, rotation: 4 }, { opacity: 1, y: 0, scale: 1, rotation: 9, duration: 0.333333, ease: "power4.out", immediateRender: false }, 0.133333);
+      tl.fromTo("#hook-punch", { opacity: 0, y: 20, filter: "blur(14px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.233333, ease: "power3.out", immediateRender: false }, 0.4);
+      tl.fromTo("#save-bar", { opacity: 0, x: -32, filter: "blur(10px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.233333, ease: "power3.out", immediateRender: false }, 1.2);
+      tl.set("#w-hook", { autoAlpha: 0 }, 2.99);
+
+      // BEAT 2 (3.0s - 6.0s)
+      tl.set("#w-ladder", { autoAlpha: 1 }, 3.0);
+      tl.fromTo("#step-dot-1", { scale: 1.36, boxShadow: "0 0 42px #ffffff" }, { scale: 1, boxShadow: "0 0 18px rgba(233,255,0,0.48)", duration: 0.4, ease: "expo.out", immediateRender: false }, 3.033333);
+      tl.fromTo("#trick-pill", { opacity: 0, scale: 0.78, x: 28 }, { opacity: 1, scale: 1, x: 0, duration: 0.266666, ease: "back.out(1.4)", immediateRender: false }, 3.333333);
+      [["#lad-1", 3.1], ["#lad-2", 3.366666], ["#lad-3", 3.633333], ["#lad-4", 3.933333]].forEach(([sel, at]) => {
+        tl.fromTo(sel, { opacity: 0, y: 18, filter: "blur(14px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.2, ease: "power3.out", immediateRender: false }, at);
+      });
+      tl.fromTo("#lad-underline", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.266666, ease: "power3.out", immediateRender: false }, 4.066666);
+      ["#lad-1", "#lad-2", "#lad-3", "#lad-4"].forEach((sel, idx) => {
+        tl.to(sel, { opacity: 0, y: -10, filter: "blur(16px)", duration: 0.2, ease: "power2.in" }, 5.666666 + idx * 0.033333);
+      });
+      tl.set("#w-ladder", { autoAlpha: 0 }, 5.99);
+
+      // BEAT 3 (6.0s - 9.0s)
+      tl.set("#w-device", { autoAlpha: 1 }, 6.0);
+      tl.fromTo("#device-caption", { opacity: 0, y: 16, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.2, ease: "power3.out", immediateRender: false }, 6.066666);
+      tl.fromTo("#phone-rig", { opacity: 0, y: 210, scale: 0.95, rotationY: 0, rotationX: 0, transformPerspective: 1400 }, { opacity: 1, y: 0, scale: 1, rotationY: 0, rotationX: 0, transformPerspective: 1400, duration: 0.266666, ease: "power4.out", immediateRender: false }, 6.033333);
+      tl.fromTo("#ui-neon-box", { opacity: 0, scale: 1.06 }, { opacity: 1, scale: 1, duration: 0.266666, ease: "power3.out", immediateRender: false }, 6.533333);
+      tl.to("#phone-rig", { rotationY: -15, rotationX: 4, transformPerspective: 1400, duration: 0.333333, ease: "power3.inOut" }, 7.366666);
+      tl.set("#w-device", { autoAlpha: 0 }, 8.99);
+
+      // BEAT 4 (9.0s - 12.0s) — closing lines land by 9.85s so final hold >= 2.15s
+      tl.set("#w-outro", { autoAlpha: 1 }, 9.0);
+      tl.fromTo("#outro-head", { opacity: 0, y: 20, filter: "blur(14px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.2, ease: "power3.out", immediateRender: false }, 9.033333);
+      tl.fromTo("#pill-1", { opacity: 0, scaleX: 0.86, y: 24 }, { opacity: 1, scaleX: 1, y: 0, duration: 0.233333, ease: "power3.out", immediateRender: false }, 9.133333);
+      tl.fromTo("#p1-a", { opacity: 0, y: 56 }, { opacity: 1, y: 0, duration: 0.333333, ease: "power4.out", immediateRender: false }, 9.233333);
+      tl.fromTo("#p1-b", { opacity: 0, y: -56 }, { opacity: 1, y: 0, duration: 0.333333, ease: "power4.out", immediateRender: false }, 9.266666);
+      tl.fromTo("#pill-2", { opacity: 0, scaleX: 0.86, y: 24 }, { opacity: 1, scaleX: 1, y: 0, duration: 0.233333, ease: "power3.out", immediateRender: false }, 9.433333);
+      tl.fromTo("#p2-a", { opacity: 0, y: 56 }, { opacity: 1, y: 0, duration: 0.333333, ease: "power4.out", immediateRender: false }, 9.533333);
+      tl.fromTo("#p2-b", { opacity: 0, y: -56 }, { opacity: 1, y: 0, duration: 0.333333, ease: "power4.out", immediateRender: false }, 9.566666);
+      tl.fromTo("#handle-cta", { opacity: 0, y: 28, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.233333, ease: "back.out(1.4)", immediateRender: false }, 9.7);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

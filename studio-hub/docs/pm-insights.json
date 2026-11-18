@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "version": "3.0.0-local",
+  "updatedAt": "2026-11-18T01:57:00Z",
+  "positioning": {
+    "headline": "100% local-first AI video studio with zero cloud lock-in and $0 subscription guard",
+    "corePromise": "Edit real talking-head footage, screen recordings, multilingual voiceovers, spatial node scenes, and pre-tested ad creatives entirely on your local machine."
+  },
+  "capabilities": [
+    {
+      "id": "voice-and-lipsync",
+      "title": "Original voice auto-sync & multilingual AI lip-sync",
+      "stepPlacement": 3,
+      "supportedLanguages": ["Bengali", "English", "Hindi"],
+      "summary": "Preserve and silence-trim the speaker's real voice or generate neural Bengali, English, and Hindi narration with OpenCV face-guided cadence alignment."
+    },
+    {
+      "id": "whiteboard-scene-builder",
+      "title": "Node-based footage & note whiteboard",
+      "stepPlacement": 4,
+      "summary": "Wire multiple footage clips and sticky-note prompts into a single Scene node to trim dead air, stitch clips via FFmpeg, and render a 1080p Design Frame."
+    },
+    {
+      "id": "ad-creative-analytics",
+      "title": "Pre-publish ad creative & retention analytics",
+      "stepPlacement": 4,
+      "summary": "Audit 3-second thumbstop hook strength, second-by-second retention decay, muted-autoplay readability, TikTok/Reels/Shorts UI safe zones, and 1-click A/B hooks offline."
+    }
+  ],
+  "multilingualVoiceSpecs": {
+    "maxWordsPerSecond": {
+      "English": 3.4,
+      "Bengali": 3.0,
+      "Hindi": 3.1
+    },
+    "lipsyncCadenceClamp": [0.75, 1.35],
+    "silenceTrimThresholdDb": -35,
+    "breathPadMs": 100
+  },
+  "safeZones": {
+    "resolution": [1080, 1920],
+    "platforms": {
+      "TikTok": { "topUnsafePx": 150, "rightRailWidthPx": 162, "bottomUnsafePx": 360 },
+      "InstagramReels": { "topUnsafePx": 140, "rightRailWidthPx": 150, "bottomUnsafePx": 340 },
+      "YouTubeShorts": { "topUnsafePx": 140, "rightRailWidthPx": 156, "bottomUnsafePx": 380 }
+    },
+    "recommendedCopyBandsPx": {
+      "upperEditorial": [220, 360],
+      "chestOptical": [1040, 1260]
+    }
+  },
+  "adBenchmarks": {
+    "targetHookDurationSec": 3.0,
+    "maxHookHeadlineWords": 7,
+    "patternInterruptIntervalSec": 3.2,
+    "wcagContrastFloor": 4.5
+  },
+  "nextHorizonDifferentiators": [
+    {
+      "rank": 1,
+      "id": "beat-quantized-magnetic-cuts",
+      "title": "Beat-quantized magnetic cuts & speed ramps",
+      "impact": "high",
+      "description": "Snap scene boundaries and GSAP velocity peaks directly to detected audio transients and syllable onsets at frame-exact 30fps intervals."
+    },
+    {
+      "rank": 2,
+      "id": "local-matte-subject-occlusion",
+      "title": "Offline subject matte occlusion (text behind speaker)",
+      "impact": "high",
+      "description": "Composite scarce climax headlines behind on-camera speakers using cached local foreground segmentation while keeping verbatim rail subtitles in front."
+    },
+    {
+      "rank": 3,
+      "id": "saliency-multi-aspect-reframe",
+      "title": "One-pass multi-aspect smart reframe (9:16, 16:9, 1:1)",
+      "impact": "high",
+      "description": "Use detected face boxes and cursor focus coordinates to export vertical, landscape, and square masters simultaneously without cropping subjects."
+    },
+    {
+      "rank": 4,
+      "id": "delta-scene-subcomp-patching",
+      "title": "Instant delta scene re-render (zero full-film re-encode)",
+      "impact": "medium-high",
+      "description": "Cache rendered scene slices by content hash so editing one caption or regional frame mask re-renders only that 3-second scene in under 2 seconds."
+    },
+    {
+      "rank": 5,
+      "id": "portable-studioskills-bundles",
+      "title": "Portable local skill & motion-ledger packs",
+      "impact": "medium",
+      "description": "Bundle SKILL.md rules, motion-doctrine vector ledgers, color looks, and synthesized SFX into drop-in local folders with zero cloud accounts."
+    }
+  ],
+  "recommendations": [
+    "Keep Scene 1 under 3.0s with a bold 4-to-7 word hook headline and active camera punch-in to maximize 3s thumbstop retention.",
+    "Place primary talking-head copy in the chest optical zone (1040px-1260px) or upper band (220px-360px) to clear TikTok, Reels, and Shorts bottom/right chrome.",
+    "Insert a visual progression (cut, wrapper zoom, callout card, or cursor action) every 1.8s-3.2s to prevent mid-reel viewer drop-off.",
+    "Use Original Voice Auto-Sync for authentic on-camera founder/retailer pitches, and switch to Bengali, English, or Hindi AI lip-sync for localized ad variants."
+  ]
+}

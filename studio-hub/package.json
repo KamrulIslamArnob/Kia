@@ -1,0 +1,11 @@
+{
+  "name": "@hyperframes/studio-hub",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "setup": "node setup.mjs",
+    "build": "node build-ui.mjs",
+    "start": "node server.mjs",
+    "test": "node --test tests/*.test.mjs"
+  }
+}
